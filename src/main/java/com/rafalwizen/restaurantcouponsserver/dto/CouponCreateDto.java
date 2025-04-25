@@ -36,4 +36,6 @@ public class CouponCreateDto {
     private String termsAndConditions;
 
     private Boolean isActive = true;
+
+    private Long imageId;
 }

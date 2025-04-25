@@ -19,4 +19,6 @@ public class CouponDetailDto {
     private Date validTo;
     private String termsAndConditions;
     private Boolean isActive;
+    private Long imageId;
+    private String imageUrl;
 }

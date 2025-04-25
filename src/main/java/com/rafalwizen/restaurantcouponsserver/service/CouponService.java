@@ -6,24 +6,30 @@ import com.rafalwizen.restaurantcouponsserver.dto.CouponSummaryDto;
 import com.rafalwizen.restaurantcouponsserver.dto.CouponUpdateDto;
 import com.rafalwizen.restaurantcouponsserver.exception.ResourceNotFoundException;
 import com.rafalwizen.restaurantcouponsserver.model.Coupon;
+import com.rafalwizen.restaurantcouponsserver.model.Image;
 import com.rafalwizen.restaurantcouponsserver.repository.CouponRepository;
+import com.rafalwizen.restaurantcouponsserver.repository.ImageRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class CouponService {
 
     private final CouponRepository couponRepository;
+    private final ImageRepository imageRepository;
 
     @Autowired
-    public CouponService(CouponRepository couponRepository) {
+    public CouponService(CouponRepository couponRepository, ImageRepository imageRepository) {
         this.couponRepository = couponRepository;
+        this.imageRepository = imageRepository;
     }
 
     public Page<CouponSummaryDto> getAllActiveCoupons(Pageable pageable) {
@@ -49,6 +55,12 @@ public class CouponService {
     public CouponDetailDto createCoupon(CouponCreateDto couponDto) {
         Coupon coupon = new Coupon();
         BeanUtils.copyProperties(couponDto, coupon);
+
+        // Verify image exists if provided
+        if (couponDto.getImageId() != null) {
+            validateImageExists(couponDto.getImageId());
+        }
+
         Coupon savedCoupon = couponRepository.save(coupon);
         return convertToDetailDto(savedCoupon);
     }
@@ -80,6 +92,13 @@ public class CouponService {
             existingCoupon.setIsActive(couponDto.getIsActive());
         }
 
+        // Update image association
+        if (couponDto.getImageId() != null) {
+            // Verify image exists
+            validateImageExists(couponDto.getImageId());
+            existingCoupon.setImageId(couponDto.getImageId());
+        }
+
         Coupon updatedCoupon = couponRepository.save(existingCoupon);
         return convertToDetailDto(updatedCoupon);
     }
@@ -103,6 +122,27 @@ public class CouponService {
     private CouponDetailDto convertToDetailDto(Coupon coupon) {
         CouponDetailDto dto = new CouponDetailDto();
         BeanUtils.copyProperties(coupon, dto);
+
+        // Add image URL if associated with an image
+        if (coupon.getImageId() != null) {
+            String imageUrl = buildImageUrl(coupon.getImageId());
+            dto.setImageUrl(imageUrl);
+        }
+
         return dto;
+    }
+
+    private String buildImageUrl(Long imageId) {
+        return ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/api/images/")
+                .path(imageId.toString())
+                .path("/content")
+                .toUriString();
+    }
+
+    private void validateImageExists(Long imageId) {
+        if (imageId != null && !imageRepository.existsById(imageId)) {
+            throw new ResourceNotFoundException("Image not found with id: " + imageId);
+        }
     }
 }

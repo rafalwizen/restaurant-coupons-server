@@ -50,6 +50,9 @@ public class Coupon {
     @Column(name = "is_active")
     private Boolean isActive = true;
 
+    @Column(name = "image_id")
+    private Long imageId;
+
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;

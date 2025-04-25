@@ -29,4 +29,6 @@ public class CouponUpdateDto {
     private String termsAndConditions;
 
     private Boolean isActive;
+
+    private Long imageId;
 }
