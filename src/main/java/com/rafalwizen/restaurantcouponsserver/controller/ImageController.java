@@ -54,20 +54,12 @@ public class ImageController {
 			contentType = resource.getFile().toPath().getFileName().toString();
 			if (contentType.contains(".")) {
 				String extension = contentType.substring(contentType.lastIndexOf(".") + 1);
-				switch (extension.toLowerCase()) {
-					case "jpg":
-					case "jpeg":
-						contentType = "image/jpeg";
-						break;
-					case "png":
-						contentType = "image/png";
-						break;
-					case "gif":
-						contentType = "image/gif";
-						break;
-					default:
-						contentType = "application/octet-stream";
-				}
+				contentType = switch (extension.toLowerCase()) {
+					case "jpg", "jpeg" -> "image/jpeg";
+					case "png" -> "image/png";
+					case "gif" -> "image/gif";
+					default -> "application/octet-stream";
+				};
 			}
 		} catch (Exception e) {
 			// Use default content type if determination fails

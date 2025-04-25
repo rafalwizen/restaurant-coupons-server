@@ -90,7 +90,7 @@ public class ImageService {
 
 		// Generate unique filename to prevent overwriting
 		String fileExtension = StringUtils.getFilenameExtension(originalFilename);
-		String uniqueFilename = UUID.randomUUID().toString() + "." + fileExtension;
+		String uniqueFilename = UUID.randomUUID() + "." + fileExtension;
 
 		try {
 			// Copy file to the target location
