@@ -6,8 +6,8 @@
 
 -- Admins Table
 CREATE TABLE IF NOT EXISTS admins (
-                                      id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                      username VARCHAR(50) NOT NULL UNIQUE,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     role VARCHAR(20) NOT NULL,
@@ -17,8 +17,8 @@ CREATE TABLE IF NOT EXISTS admins (
 
 -- Coupons Table
 CREATE TABLE IF NOT EXISTS coupons (
-                                       id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                       name VARCHAR(100) NOT NULL,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
     description VARCHAR(500),
     discount_value DECIMAL(10,2) NOT NULL,
     valid_from TIMESTAMP NOT NULL,
@@ -40,3 +40,18 @@ VALUES
     ('Welcome Coupon', 'Get 10% off on your first order', 10.00, '2025-01-01 00:00:00', '2025-12-31 23:59:59', 'Applicable only for new customers', TRUE),
     ('Happy Hour', '20% off on beverages between 5 PM and 7 PM', 20.00, '2025-04-01 00:00:00', '2025-05-31 23:59:59', 'Valid only for dine-in customers', TRUE),
     ('Lunch Combo', 'Get a free dessert with any lunch combo', 100.00, '2025-04-01 00:00:00', '2025-04-30 23:59:59', 'Valid Monday to Friday, 11 AM to 3 PM', TRUE);
+
+-- Create images table
+CREATE TABLE IF NOT EXISTS images (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    file_name VARCHAR(255) NOT NULL,
+    file_path VARCHAR(255) NOT NULL,
+    file_type VARCHAR(100),
+    file_size BIGINT,
+    description VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    );
+
+-- Add image_id column to coupons table if it doesn't exist
+ALTER TABLE coupons ADD COLUMN IF NOT EXISTS image_id BIGINT;
