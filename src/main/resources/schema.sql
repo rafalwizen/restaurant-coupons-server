@@ -55,3 +55,10 @@ CREATE TABLE IF NOT EXISTS images (
 
 -- Add image_id column to coupons table if it doesn't exist
 ALTER TABLE coupons ADD COLUMN IF NOT EXISTS image_id BIGINT;
+
+-- Insert sample image for the "Happy Hour" coupon
+INSERT INTO images (file_name, file_path, file_type, file_size, description)
+VALUES ('beverage_splash.jpg', '/uploads/images/', 'image/jpeg', 245678, 'Refreshing drink with splash for Happy Hour promotion');
+
+-- Update the Happy Hour coupon to reference this image
+UPDATE coupons SET image_id = 1 WHERE name = 'Happy Hour';
