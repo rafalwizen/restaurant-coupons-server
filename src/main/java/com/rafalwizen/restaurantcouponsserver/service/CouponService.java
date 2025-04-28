@@ -32,6 +32,11 @@ public class CouponService {
         this.imageRepository = imageRepository;
     }
 
+    public Page<CouponSummaryDto> getAllCoupons(Pageable pageable) {
+        Page<Coupon> coupons = couponRepository.findAll(pageable);
+        return coupons.map(this::convertToSummaryDto);
+    }
+
     public Page<CouponSummaryDto> getAllActiveCoupons(Pageable pageable) {
         Page<Coupon> coupons = couponRepository.findAllActiveCoupons(new Date(), pageable);
         return coupons.map(this::convertToSummaryDto);

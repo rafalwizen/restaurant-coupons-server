@@ -7,6 +7,10 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +26,21 @@ public class AdminCouponController {
     @Autowired
     public AdminCouponController(CouponService couponService) {
         this.couponService = couponService;
+    }
+
+    @GetMapping
+    @Operation(summary = "Get all coupons", description = "Retrieve a paginated list of all coupons")
+    public ResponseEntity<ApiResponse<Page<CouponSummaryDto>>> getAllCoupons(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction) {
+
+        Sort.Direction sortDirection = direction.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+
+        Page<CouponSummaryDto> coupons = couponService.getAllCoupons(pageable);
+        return ResponseEntity.ok(ApiResponse.success("Coupons retrieved successfully", coupons));
     }
 
     @PostMapping
