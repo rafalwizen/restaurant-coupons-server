@@ -122,6 +122,7 @@ public class CouponService {
         dto.setName(coupon.getName());
         dto.setDiscountValue(coupon.getDiscountValue());
         dto.setImageId(coupon.getImageId());
+        dto.setImageUrl(buildImageUrl(coupon.getImageId()));
         return dto;
     }
 
