@@ -13,4 +13,5 @@ public class CouponSummaryDto {
     private Long id;
     private String name;
     private BigDecimal discountValue;
+    private Long imageId;
 }
