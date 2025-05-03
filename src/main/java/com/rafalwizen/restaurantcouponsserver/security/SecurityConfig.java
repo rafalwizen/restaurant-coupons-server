@@ -30,10 +30,12 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private final CorsProperties corsProperties;
 
     @Autowired
-    public SecurityConfig(JwtAuthenticationEntryPoint authenticationEntryPoint) {
+    public SecurityConfig(JwtAuthenticationEntryPoint authenticationEntryPoint, CorsProperties corsProperties) {
         this.authenticationEntryPoint = authenticationEntryPoint;
+        this.corsProperties = corsProperties;
     }
 
     @Bean
@@ -54,7 +56,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173")); // frontend dev serwer
+        config.setAllowedOrigins(corsProperties.getAllowedOrigins());
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
